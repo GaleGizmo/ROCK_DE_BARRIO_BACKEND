@@ -11,6 +11,7 @@ const EventoSchema = new mongoose.Schema(
     date_start: { type: Date, required: true },
     date_end: { type: Date},
     buy_ticket: {type: String},
+    payWhatYouWant: {type: Boolean, default:false},
     url: { type: String },
     image: { type: String },
     youtubeVideoId: {type: String},
