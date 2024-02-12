@@ -6,7 +6,7 @@ const {
 
   enviarReminderEventos,
 } = require("../../utils/email");
-
+const { nanoid } = require('nanoid');
 const User = require("../usuario/usuario.model");
 const Evento = require("./evento.model");
 
@@ -25,7 +25,7 @@ const getAllEventos = async (req, res, next) => {
 const getEventosDesdeHoy = async (req, res, next) => {
   try {
     const hoy = new Date();
-    
+    hoy.setHours(0,0,0,0)
     const eventos = await Evento.find({ date_start: { $gte: hoy } });
 
     eventos.sort((a, b) => a.date_start - b.date_start);
@@ -248,7 +248,12 @@ const sendEventosDiariosHandler = async (req, res) => {
 const getEventoById = async (req, res, next) => {
   try {
     const { idEvento } = req.params;
-    const evento = await Evento.findById(idEvento);
+    let evento
+    if (idEvento.length === 4) { // Verifica si el parámetro es un shortURL
+      evento = await Evento.findOne({ shortURL: idEvento });
+    } else { // Si no, asume que es un evento_id
+      evento = await Evento.findById(idEvento);
+    }
     return res.status(200).json(evento);
   } catch (error) {
     return next(error);
@@ -274,6 +279,7 @@ const setEvento = async (req, res, next) => {
       genre,
     } = req.body;
 
+    const shortURL= await generateUniqueShortUrl();
     const timestamp = new Date();
     const newEvento = new Evento({
       title,
@@ -290,6 +296,7 @@ const setEvento = async (req, res, next) => {
       image,
       youtubeVideoId,
       genre,
+      shortURL,
       timestamp,
     });
     if (req.file) {
@@ -375,6 +382,49 @@ const updateEvento = async (req, res, next) => {
     return next(error);
   }
 };
+
+async function generateUniqueShortUrl() {
+  let unique = false;
+  let shortUrl;
+ 
+  while (!unique) {
+    shortUrl = nanoid(4); 
+    const existingEvent = await Evento.findOne({ shortURL: shortUrl });
+    if (!existingEvent) {
+      unique = true; 
+    }
+  }
+ 
+  return shortUrl;
+ }
+ 
+
+async function addUniqueShortUrlToEvents() {
+ const events = await Evento.find(); 
+ 
+ for (const event of events) {
+   let unique = false;
+   let shortUrl;
+   
+   while (!unique) {
+     shortUrl = nanoid(4); 
+     try {
+       await Evento.updateOne({ _id: event._id }, { $set: { shortURL: shortUrl } });
+       unique = true; 
+     } catch (error) {
+       if (error.code === 11000) { // Error de violación de índice único
+        console.log("ID duplicado, se intentará crear un nuevo ID");
+         continue; // Intentar con un nuevo ID
+       } else {
+         throw error; 
+       }
+     }
+   }
+ }
+ 
+ console.log('Todos los eventos han sido actualizados con shortURL únicos.');
+}
+// addUniqueShortUrlToEvents().catch(console.error);
 
 module.exports = {
   getAllEventos,

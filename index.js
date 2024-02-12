@@ -3,7 +3,7 @@ require("dotenv").config();
 const cors = require("cors");
 const cron = require('node-cron');
 const cloudinary = require("cloudinary").v2;
-const { remindEvento, sendEventosSemanales } = require("./src/api/evento/evento.controller.js");
+// const { remindEvento, sendEventosSemanales } = require("./src/api/evento/evento.controller.js");
 const PORT = process.env.PORT;
 
 const db = require("./src/utils/db.js");
