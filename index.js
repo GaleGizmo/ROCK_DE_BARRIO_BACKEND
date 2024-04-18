@@ -53,10 +53,17 @@ server.use("/usuario", usuarioRoutes);
 server.use("/evento", eventoRoutes);
 server.use("/comentario", comentarioRoutes);
 
+// Middleware para manejar errores de JWT
+server.use((err, req, res, next) => {
+  if (err instanceof jwt.TokenExpiredError) {
+    return res.status(401).json({ message: "A túa sesión expirou, por favor volve iniciar sesión" });
+  }
+  next(err);
+});
+// Middleware para manejar otros errores
 server.use((err, req, res, next) => {
   return res.status(err.status || 500).json(err.message || "Unexpected error");
 });
-
 server.use("/", (req, res) => {
   res.status(200).json("Working");
 });
