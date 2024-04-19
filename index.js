@@ -1,6 +1,12 @@
 require("dotenv").config();
 
-const cors = require("cors");
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200
+}
+
+server.use(cors(corsOptions));
+
 const cron = require('node-cron');
 const cloudinary = require("cloudinary").v2;
 // const { remindEvento, sendEventosSemanales } = require("./src/api/evento/evento.controller.js");
