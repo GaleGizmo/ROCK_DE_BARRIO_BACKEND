@@ -1,11 +1,11 @@
 require("dotenv").config();
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173','https://rock-de-barrio-front-one.vercel.app/'],
   optionsSuccessStatus: 200
 }
+const cors = require("cors");
 
-server.use(cors(corsOptions));
 
 const cron = require('node-cron');
 const cloudinary = require("cloudinary").v2;
@@ -49,8 +49,8 @@ const comentarioRoutes = require("./src/api/comentario/comentario.routes");
 
 
 const server = express();
+server.use(cors(corsOptions));
 
-server.use(cors());
 
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
