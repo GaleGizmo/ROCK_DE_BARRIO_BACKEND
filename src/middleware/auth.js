@@ -1,6 +1,7 @@
 const User = require("../api/usuario/usuario.model");
 const { verifyJwt } = require("../utils/jwt");
 const Comentario = require("../api/comentario/comentario.model");
+
 const authenticate = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
@@ -49,6 +50,7 @@ const isAdmin = async (req, res, next) => {
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
+
 const isAdminOrOwner = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
@@ -78,6 +80,7 @@ const isAdminOrOwner = async (req, res, next) => {
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
+
 const isAdminOrComentarioOwner = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
