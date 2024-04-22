@@ -17,7 +17,7 @@ const authenticate = async (req, res, next) => {
   next();
 };
 
-const isAuth = authenticate;
+
 
 const isAdmin = [authenticate, (req, res, next) => {
   if (req.user.role === 2) {
@@ -49,5 +49,5 @@ const isAdminOrComentarioOwner = [authenticate, async (req, res, next) => {
   }
 }];
 
-module.exports = { isAuth, isAdmin, isAdminOrOwner, isAdminOrComentarioOwner };
+module.exports = { authenticate, isAdmin, isAdminOrOwner, isAdminOrComentarioOwner };
 
