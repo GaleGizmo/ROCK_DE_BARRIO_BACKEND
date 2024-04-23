@@ -6,9 +6,14 @@ const generateSign = (id, username, role) => {
   });
 };
 
-const verifyJwt = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET);
+const verifyJwt = (token, next) => {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    next(err); // Pasar el error al siguiente middleware
+  }
 };
+
 const generateTempToken = (id)=>{
   return jwt.sign({id}, process.env.JWT_SECRET, {
     expiresIn: "1h",
