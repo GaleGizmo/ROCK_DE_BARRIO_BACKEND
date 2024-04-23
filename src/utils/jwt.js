@@ -6,12 +6,16 @@ const generateSign = (id, username, role) => {
   });
 };
 
-const verifyJwt = (token, next) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    next(err); // Pasar el error al siguiente middleware
-  }
+const verifyJwt = (token) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decodedToken);
+      }
+    });
+  });
 };
 
 const generateTempToken = (id)=>{
