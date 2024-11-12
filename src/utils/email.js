@@ -97,51 +97,30 @@ const enviarCorreo = async (destinatario, eventos, semanal) => {
     throw new Error("No se pudo enviar el correo electrónico.");
   }
 };
-// const enviarCorreoElectronico = async (destinatario, evento) => {
-//   try {
-//     const transporter = await createTransporter();
-
-//     const dia = evento.date_start.getDate();
-//     const mes = evento.date_start.getMonth();
-//     const mesesEnGallego = [
-//       "Xaneiro",
-//       "Febreiro",
-//       "Marzo",
-//       "Abril",
-//       "Maio",
-//       "Xuño",
-//       "Xullo",
-//       "Agosto",
-//       "Setembro",
-//       "Outubro",
-//       "Novembro",
-//       "Decembro",
-//     ];
-
-//     const nombreMes = mesesEnGallego[mes];
-//     let contenidoEmail=""
-//     if (evento.title===evento.artist){
-//       contenidoEmail=`<p>Ola, ${destinatario.username}!</p><p></p> <p>Engadiuse un novo evento musical: <h2><strong> ${evento.title}</strong></h2> o día <strong>${dia}</strong> de<strong> ${nombreMes}</strong>.</p>
-//       <p>Máis detalles  <a href="https://rock-the-barrio-front-one.vercel.app/${evento._id}"> aquí.</a></p> <p></p> <p>Para deixar de recibir estes correos preme <a href="https://rock-the-barrio-front-one.vercel.app/reset-password/unsubscribenewevent"> aquí</a>.</p><p>Podes ver aquí os <a href="https://rock-the-barrio-front-one.vercel.app/terminos"> Termos e Condicións </a> e a nosa <a href="https://rock-the-barrio-front-one.vercel.app/privacidad"> Política de Privacidade</a>.</p>`
-//     } else {
-//       contenidoEmail=`<p>Ola, ${destinatario.username}!</p><p></p> <p>Engadiuse un novo evento musical: <p></p><h2><strong> ${evento.title}</strong></h2> con <h3><strong> ${evento.artist}</strong></h3> o día <strong>${dia}</strong> de<strong> ${nombreMes}</strong>.</p>
-//       <p>Máis detalles  <a href="https://rock-the-barrio-front-one.vercel.app/${evento._id}"> aquí.</a></p> <p></p> <p>Para deixar de recibir estes correos preme <a href="https://rock-the-barrio-front-one.vercel.app/reset-password/unsubscribenewevent"> aquí</a>.</p><p>Podes ver aquí os <a href="https://rock-the-barrio-front-one.vercel.app/terminos"> Termos e Condicións </a> e a nosa <a href="https://rock-the-barrio-front-one.vercel.app/privacidad"> Política de Privacidade</a>.</p>`
-//     }
-
-//     const mensaje = {
-//       from: "rockthebarrio@gmail.com",
-//       to: destinatario.email,
-//       subject: "Novo evento musical",
-//       html: contenidoEmail ,
-//     };
-
-//     const respuesta = await transporter.sendMail(mensaje);
-//     console.log("Correo electrónico enviado:", respuesta);
-//   } catch (error) {
-//     console.error("Error al enviar el correo electrónico:", error);
-//     throw new Error("No se pudo enviar el correo electrónico.");
-//   }
-// };
+const enviarCorreccionEvento = async (user, evento, mensaje, asunto) =>{
+  try {
+    const transporter = await createTransporter();
+    const contenido = `
+     <div style="display: block; width: 100%; text-align:center;"> <p>Ola, ${user.username}!</p>
+     <p>Por favor, toma nota da seguinte corrección:</p>
+     <p>Evento: <a href="https://rock-the-barrio-front-one.vercel.app/${evento._id}"> ${evento.title}</a></p>
+      <p>Corrección: ${mensaje}</p>
+      <p></p>
+      <p style="font-size: 10px; color: #555;">Podes ver aquí os <a href="https://rock-the-barrio-front-one.vercel.app/terminos"> Termos e Condicións </a> e a nosa <a href="https://rock-the-barrio-front-one.vercel.app/privacidad"> Política de Privacidade</a>.</p>
+      </div>`;
+    const email = {
+      from: ' Rock The Barrio <rockthebarrio@gmail.com>',
+      to: user.email,
+      subject: asunto,
+      html: contenido,
+    };
+    const respuesta = await transporter.sendMail(email);
+    console.log("Correo electrónico enviado:", respuesta);
+  } catch (error) {
+    console.error("Error al enviar el correo electrónico:", error);
+    throw new Error("No se pudo enviar el correo electrónico.");
+  }
+}
 
 const enviarReminderEventos = async (evento, usuario) => {
   try {
@@ -201,4 +180,5 @@ module.exports = {
   enviarCorreo,
   enviarCorreoRecuperacion,
   enviarReminderEventos,
+  enviarCorreccionEvento
 };

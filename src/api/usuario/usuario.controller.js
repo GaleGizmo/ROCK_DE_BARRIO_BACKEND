@@ -201,15 +201,15 @@ const forgotPassword = async (req, res) => {
     res.status(200).json({
       token,
       message:
-        "Se ha enviado un correo electrónico de recuperación de contraseña",
+        "Enviouse un email de recuperación de contrasinal",
     });
   } catch (error) {
     console.error(
-      "Error al procesar la solicitud de recuperación de contraseña:",
+      "Error ao procesar a solicitude de recuperación de contrasinal:",
       error
     );
     res.status(500).json({
-      message: "Error al procesar la solicitud de recuperación de contraseña",
+      message: "Error ao procesar a solicitude de recuperación de contrasinal",
     });
   }
 };
@@ -223,7 +223,7 @@ const resetPassword = async (req, res, next) => {
       resetPasswordExpires: { $gt: Date.now() },
     });
     if (!user) {
-      return res.status(400).json({ message: "Token inválido o expirado" });
+      return res.status(400).json({ message: "Token inválido ou expirado" });
     }
 
     // Actualizar la contraseña del usuario
@@ -233,10 +233,10 @@ const resetPassword = async (req, res, next) => {
     user.resetPasswordExpires = null;
     await user.save();
 
-    res.status(200).json({ message: "Contraseña restablecida exitosamente" });
+    res.status(200).json({ message: "Contrasinal restablecido exitosamente" });
   } catch (error) {
-    console.error("Error al restablecer la contraseña:", error);
-    res.status(500).json({ message: "Error al restablecer la contraseña" });
+    console.error("Error ao restablecer o contrasinal:", error);
+    res.status(500).json({ message: "Error ao restablecer o contrasinal" });
   }
 };
 const unsubscribe = async (req, res, next) => {
@@ -247,7 +247,7 @@ const unsubscribe = async (req, res, next) => {
     const user = await Usuario.findOne({ email: email });
    
     if (!user) {
-      return res.status(404).json({ message: "Usuario non encontrado" });
+      return res.status(404).json({ message: "Usuario non atopado" });
     }
     if (user && user._id.toString()!==idUsuario){
       return res.status(400).json({ message: "Non estás autorizado" })
@@ -257,8 +257,8 @@ const unsubscribe = async (req, res, next) => {
     await user.save();
     res.status(200).json({ user, message: "Axustes de suscripción cambiados" });
   } catch (error) {
-    console.error("Error al cancelar la suscripción:", error);
-    res.status(500).json({ message: "Error al cambiar la suscripción" });
+    console.error("Error ao cancelar a suscripción:", error);
+    res.status(500).json({ message: "Error ao cambiar a suscripción" });
   }
 };
 
@@ -267,11 +267,11 @@ const addFavorite=async(req, res, next)=>{
   try {
     const usuario = await Usuario.findById(userId);
     if (!usuario) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ message: "Usuario non atopado" });
     }
     const evento = await Evento.findById(eventId);
     if (!evento) {
-      return res.status(404).json({ message: "Evento no encontrado" });
+      return res.status(404).json({ message: "Evento non atopado" });
     }
     if (add) {usuario.favorites.push(eventId);}
     else {usuario.favorites.pull(eventId);}
@@ -280,12 +280,12 @@ const addFavorite=async(req, res, next)=>{
     
 
     res.json({
-      message: add ? " Evento añadido correctamente": "Evento eliminado correctamente", 
+      message: add ? " Evento engadido correctamente": "Evento eliminado correctamente", 
       
     });
   } catch (error) {
     
-    res.status(500).json({ message: "Error al modificar favoritos" });
+    res.status(500).json({ message: "Error ao modificar favoritos" });
   }
 
 }
