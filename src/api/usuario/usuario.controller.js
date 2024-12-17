@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Usuario = require("./usuario.model");
 const { deleteImg } = require("../../middleware/deleteImg");
-const { enviarCorreoRecuperacion } = require("../../utils/email");
+const { enviarCorreoRecuperacion, enviarMensajeDeUsuario } = require("../../utils/email");
 const Evento = require("../evento/evento.model");
 const Comentario = require("../comentario/comentario.model")
 
@@ -190,7 +190,7 @@ const forgotPassword = async (req, res) => {
   try {
     const user = await Usuario.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ message: "Usuario non atopado" });
     }
     const token = generateTempToken(user._id);
     console.log(token, user);
@@ -235,8 +235,8 @@ const resetPassword = async (req, res, next) => {
 
     res.status(200).json({ message: "Contrasinal restablecido exitosamente" });
   } catch (error) {
-    console.error("Error ao restablecer o contrasinal:", error);
-    res.status(500).json({ message: "Error ao restablecer o contrasinal" });
+    console.error("Erro ao restablecer o contrasinal:", error);
+    res.status(500).json({ message: "Erro ao restablecer o contrasinal" });
   }
 };
 const unsubscribe = async (req, res, next) => {
@@ -257,8 +257,8 @@ const unsubscribe = async (req, res, next) => {
     await user.save();
     res.status(200).json({ user, message: "Axustes de suscripción cambiados" });
   } catch (error) {
-    console.error("Error ao cancelar a suscripción:", error);
-    res.status(500).json({ message: "Error ao cambiar a suscripción" });
+    console.error("Erro ao cancelar a suscripción:", error);
+    res.status(500).json({ message: "Erro ao cambiar a suscripción" });
   }
 };
 
@@ -289,6 +289,20 @@ const addFavorite=async(req, res, next)=>{
   }
 
 }
+const sendUserMessage = async (req, res, next) => {
+  const { name, email, type, content, user } = req.body;
+
+  try {
+    
+    await enviarMensajeDeUsuario(type, name, email, content);
+   
+ 
+
+    res.status(200).json({ message: "Mensaxe enviada correctamente" });
+  } catch (error) {
+   return next(error);
+  }
+};
 module.exports = {
   login,
   createUsuario,
@@ -297,5 +311,6 @@ module.exports = {
   deleteUsuario,
   resetPassword,
   unsubscribe,
-  addFavorite
+  addFavorite,
+  sendUserMessage
 };
